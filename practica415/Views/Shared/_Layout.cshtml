@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — FitStock</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-frame">
+        <aside class="sidebar">
+            <a class="brand" asp-controller="Fitness" asp-action="Index"><span class="brand-icon">F</span><span>FitStock<small>ФИТНЕС-КЛУБ</small></span></a>
+            <div class="side-caption">@(User.IsInRole("Manager") || User.IsInRole("Admin") ? "КЛУБ" : "ЛИЧНЫЙ КАБИНЕТ")</div>
+            <nav class="side-nav" aria-label="Основная навигация">
+                @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                {
+                    <a class="side-link" asp-controller="Fitness" asp-action="Index"><span>♙</span>Клиенты клуба</a>
+                    <a class="side-link" asp-controller="Products" asp-action="Index"><span>□</span>Магазин</a>
+                    <a class="side-link" asp-controller="Inventory" asp-action="Index"><span>✓</span>Остатки магазина</a>
+                    <a class="side-link" asp-controller="Reports" asp-action="Index"><span>▤</span>Отчёты</a>
+                }
+                else { <a class="side-link" asp-controller="Fitness" asp-action="Index"><span>▣</span>Мой абонемент</a><a class="side-link" asp-controller="Products" asp-action="Index"><span>□</span>Магазин</a> }
+            </nav>
+        </aside>
+        <main class="main-column">
+            <header class="topbar"><div class="mobile-brand"><span class="brand-icon">F</span>FitStock Club</div><div class="topbar-context">Фитнес-клуб <span>·</span> Личный кабинет</div><div class="topbar-user">@if (User.Identity?.IsAuthenticated == true) { if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <a class="profile-nav" asp-controller="Account" asp-action="Profile"><img src="@(User.FindFirst("avatar")?.Value ?? "/images/avatar-default.svg")" alt="" />@User.Identity.Name</a> } else { <span class="profile-nav"><img src="/images/avatar-default.svg" alt="" />@User.Identity.Name</span> } @if (User.IsInRole("Admin")) { <a class="topbar-auth-link" asp-controller="Admin" asp-action="Index">Админ-панель</a> } <form asp-controller="Account" asp-action="Logout" method="post"><button class="topbar-auth-link" type="submit">Выйти</button></form> } else { <a class="topbar-auth-link" asp-controller="Account" asp-action="Login">Войти</a><a class="topbar-auth-register" asp-controller="Account" asp-action="Register">Регистрация</a> }</div><div class="topbar-date">@DateTime.Today.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("ru-RU"))</div></header>
+            <nav class="mobile-nav" aria-label="Навигация">
+                @if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <a asp-controller="Fitness" asp-action="Index">Клиенты</a><a asp-controller="Products" asp-action="Index">Магазин</a><a asp-controller="Inventory" asp-action="Index">Остатки</a><a asp-controller="Reports" asp-action="Index">Отчёты</a> } else { <a asp-controller="Fitness" asp-action="Index">Мой абонемент</a><a asp-controller="Products" asp-action="Index">Магазин</a> }
+            </nav>
+            <div class="content-wrap">
+                <partial name="_FlashMessages" />
+                @RenderBody()
+                <footer class="app-footer">FitStock Club <span>Абонементы и управление фитнес-клубом</span></footer>
+            </div>
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

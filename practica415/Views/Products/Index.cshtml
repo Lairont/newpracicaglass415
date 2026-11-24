@@ -1,0 +1,27 @@
+@model CatalogViewModel
+@{ ViewData["Title"] = "Магазин"; }
+
+<div class="page-heading"><div><div class="eyebrow">FITSTOCK CLUB · МАГАЗИН</div><h1>Спортивное питание</h1><p>Протеин, креатин, витамины и полезные аксессуары.</p></div>@if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <a class="btn btn-primary" asp-action="Create">＋ Добавить товар</a> }</div>
+<section class="panel compact-filter">
+    <form method="get" class="product-filter-form">
+        <label>Поиск<input class="form-control" name="search" value="@Model.Search" placeholder="Название или артикул" /></label>
+        <label>Категория<select asp-for="Category" class="form-select"><option value="">Все категории</option>@foreach (var category in Model.Categories) { <option value="@category">@category</option> }</select></label>
+        <label>Цена от<input class="form-control" type="number" name="priceFrom" value="@Model.PriceFrom" min="0" /></label>
+        <label>Цена до<input class="form-control" type="number" name="priceTo" value="@Model.PriceTo" min="0" /></label>
+        <label>Сортировка<select asp-for="Sort" class="form-select"><option value="name">По названию</option><option value="price-asc">Сначала дешевле</option><option value="price-desc">Сначала дороже</option><option value="quantity-desc">Больше в наличии</option><option value="quantity-asc">Меньше в наличии</option></select></label>
+        <div class="product-filter-actions"><button class="btn btn-primary">Показать</button><a class="btn btn-outline-secondary" asp-action="Index">Сбросить</a></div>
+    </form>
+</section>
+<section class="panel">
+    <div class="panel-header"><div><h2>Товары магазина</h2><p>@Model.Products.Count позиций · актуальные остатки</p></div></div>
+    @if (Model.Products.Count == 0) { <div class="empty-note">Товары не найдены. Измените фильтры или добавьте карточку.</div> }
+    else
+    {
+        <div class="table-responsive"><table class="table data-table align-middle"><thead><tr><th>ТОВАР</th><th>КАТЕГОРИЯ</th><th>ОСТАТОК</th><th>МИНИМУМ</th><th>ЦЕНА</th><th>ЗОНА</th><th>СОСТОЯНИЕ</th>@if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <th></th> }</tr></thead><tbody>
+        @foreach (var product in Model.Products)
+        {
+            <tr><td><a class="product-name-link" asp-action="Details" asp-route-id="@product.Id">@product.Name</a><small class="table-secondary">@product.Sku</small></td><td>@product.Category</td><td><strong>@product.Quantity</strong> @product.Unit @if (product.Quantity <= product.MinimumStock) { <span class="low-stock-tag">Мало</span> }</td><td>@product.MinimumStock @product.Unit</td><td>@product.UnitPrice.ToString("N2") MDL</td><td><span class="zone-tag">@product.Zone</span></td><td><span class="condition condition-@product.Condition.ToString().ToLowerInvariant()">@InventoryConditionLabels.Display(product.Condition)</span></td>@if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <td class="actions-cell"><a class="btn btn-sm btn-light" asp-action="Edit" asp-route-id="@product.Id">Изменить</a>@if (User.IsInRole("Admin")) { <form asp-action="Delete" asp-route-id="@product.Id" method="post" data-confirm="Удалить товар?"><button class="btn btn-sm btn-outline-danger" type="submit">Удалить</button></form> }</td> }</tr>
+        }
+        </tbody></table></div>
+    }
+</section>

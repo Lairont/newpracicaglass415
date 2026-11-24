@@ -1,0 +1,11 @@
+@model ClientFormViewModel
+@{ ViewData["Title"] = "Новый клиент"; }
+<div class="page-heading"><div><div class="eyebrow">FITSTOCK CLUB · РЕГИСТРАЦИЯ</div><h1>Добавить клиента</h1><p>После сохранения клиент получит учётную запись и выбранный абонемент.</p></div></div>
+<section class="panel form-panel"><form asp-action="CreateClient" method="post"><div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div><div class="form-grid">
+    <div class="mb-3"><label asp-for="FullName" class="form-label">ФИО</label><input asp-for="FullName" class="form-control" autocomplete="name" /></div>
+    <div class="mb-3"><label asp-for="Phone" class="form-label">Номер телефона</label><input asp-for="Phone" class="form-control" type="tel" autocomplete="tel" /></div>
+    <div class="mb-3"><label asp-for="Email" class="form-label">Электронная почта · логин</label><input asp-for="Email" class="form-control" autocomplete="email" /></div>
+    <div class="mb-3"><label asp-for="Login" class="form-label">Имя пользователя</label><input asp-for="Login" class="form-control" autocomplete="username" /></div>
+    <div class="mb-3"><label asp-for="Plan" class="form-label">Абонемент</label><select asp-for="Plan" class="form-select"><option value="1month">1 месяц</option><option value="3months">3 месяца</option><option value="6months">6 месяцев</option><option value="1year">1 год</option></select></div>
+    <div class="mb-3"><label asp-for="StartDate" class="form-label">Начало действия</label><input asp-for="StartDate" class="form-control" type="date" /></div>
+</div><div class="form-actions"><a class="btn btn-outline-secondary" asp-action="Index">Отмена</a><button class="btn btn-primary">Создать аккаунт и абонемент</button></div></form></section>

@@ -1,0 +1,9 @@
+@model IReadOnlyList<AdminUserRow>
+@{ ViewData["Title"] = "Админ-панель"; }
+<div class="page-heading"><div><div class="eyebrow">УПРАВЛЕНИЕ ДОСТУПОМ</div><h1>Админ-панель</h1><p>Назначайте роли сотрудникам и клиентам фитнес-клуба.</p></div></div>
+<section class="panel"><div class="panel-header"><div><h2>Пользователи</h2><p>@Model.Count учётных записей</p></div></div>
+    @if (Model.Count == 0) { <div class="empty-note">Пока нет зарегистрированных пользователей.</div> }
+    else { <div class="table-responsive"><table class="table data-table align-middle"><thead><tr><th>ПОЛЬЗОВАТЕЛЬ</th><th>ПОЧТА</th><th>ДАТА РЕГИСТРАЦИИ</th><th>РОЛЬ</th><th></th></tr></thead><tbody>
+        @foreach (var user in Model) { <tr><td><strong>@(user.FullName ?? user.Login)</strong><small class="table-secondary">@user.Login · @user.Email</small></td><td>@user.Phone</td><td>@user.MembershipPlan<br />@user.MembershipEnd?.ToString("dd.MM.yyyy")</td><td><span class="status-pill">@(user.Role switch { "Admin" => "Администратор", "Manager" => "Менеджер", _ => "Пользователь" })</span></td><td><form asp-action="SetRole" method="post" class="admin-role-form"><input type="hidden" name="id" value="@user.Id" /><select class="form-select" name="role"><option value="User" selected="@(user.Role == "User")">Пользователь</option><option value="Manager" selected="@(user.Role == "Manager")">Менеджер</option><option value="Admin" selected="@(user.Role == "Admin")">Администратор</option></select><button class="btn btn-sm btn-outline-primary" type="submit">Сменить роль</button></form></td></tr> }
+    </tbody></table></div> }
+</section>

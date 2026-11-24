@@ -1,0 +1,10 @@
+@model InventoryViewModel
+@{ ViewData["Title"] = "Остатки магазина"; }
+
+<div class="page-heading"><div><div class="eyebrow">МАГАЗИН КЛУБА</div><h1>Остатки спортивного питания</h1><p>Фактическое количество товаров в магазине.</p></div></div>
+@if (!User.IsInRole("Manager") && !User.IsInRole("Admin")) { <div class="info-banner"><strong>Режим просмотра</strong><span>Изменять остатки может менеджер.</span></div> }
+<div class="info-banner"><strong>Сверка остатков</strong><span>Введите пересчитанное количество. Разница будет сохранена в журнале магазина.</span></div>
+<section class="panel"><div class="panel-header"><div><h2>Остатки товаров</h2><p>@Model.Products.Count позиций</p></div></div>
+    @if (Model.Products.Count == 0) { <div class="empty-note">Добавьте товары в магазин.</div> }
+    else { <div class="table-responsive"><table class="table data-table align-middle inventory-table"><thead><tr><th>ТОВАР</th><th>ЗОНА</th><th>УЧЁТНЫЙ ОСТАТОК</th><th>ФАКТИЧЕСКИЙ ОСТАТОК</th><th>РАЗНИЦА</th><th></th></tr></thead><tbody>@foreach (var product in Model.Products) { <tr><td><strong>@product.Name</strong><small class="table-secondary">@product.Sku</small></td><td><span class="zone-tag">@product.Zone</span></td><td><span class="system-quantity">@product.Quantity</span> @product.Unit</td><td>@if ((User.IsInRole("Manager") || User.IsInRole("Admin"))) { <form asp-action="Reconcile" method="post" class="reconcile-form" data-system-quantity="@product.Quantity"><input type="hidden" name="productId" value="@product.Id" /><input type="number" name="actualQuantity" class="form-control actual-quantity" min="0" value="@product.Quantity" required aria-label="Фактический остаток товара @product.Name" /><span>@product.Unit</span><button class="btn btn-sm btn-outline-primary" type="submit">Сохранить</button></form> } else { <span>@product.Quantity @product.Unit</span> }</td><td class="difference-cell">0</td><td></td></tr> }</tbody></table></div> }
+</section>

@@ -1,0 +1,8 @@
+@model Product
+@{ ViewData["Title"] = Model.Name; }
+
+<div class="page-heading"><div><div class="eyebrow">FITSTOCK CLUB · МАГАЗИН</div><h1>@Model.Name</h1><p>@Model.Category · артикул @Model.Sku</p></div><a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">← К магазину</a></div>
+<div class="product-detail-grid">
+    <section class="panel product-detail-art"><div class="catalog-art large"><span>@Model.Category.FirstOrDefault()</span></div><div class="detail-condition"><span class="condition condition-@Model.Condition.ToString().ToLowerInvariant()">@InventoryConditionLabels.Display(Model.Condition)</span><span>Зона хранения @Model.Zone</span></div></section>
+    <section class="panel product-detail-info"><div class="detail-price">@Model.UnitPrice.ToString("N2") <small>MDL / @Model.Unit</small></div><div class="detail-stock"><span>В наличии в магазине</span><strong>@Model.Quantity @Model.Unit</strong><small>Минимальный уровень: @Model.MinimumStock @Model.Unit</small></div><dl class="detail-list"><div><dt>Категория</dt><dd>@Model.Category</dd></div><div><dt>Артикул</dt><dd>@Model.Sku</dd></div><div><dt>Дата поступления</dt><dd>@Model.PurchaseDate.ToString("dd.MM.yyyy")</dd></div><div><dt>Срок годности</dt><dd>@(Model.WarrantyUntil?.ToString("dd.MM.yyyy") ?? "Не указан")</dd></div></dl>@if (!string.IsNullOrWhiteSpace(Model.Notes)) { <div class="detail-notes"><strong>Описание</strong><p>@Model.Notes</p></div> }<div class="detail-actions">@if (User.IsInRole("Manager") || User.IsInRole("Admin")) { <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id">Изменить товар</a> }</div></section>
+</div>

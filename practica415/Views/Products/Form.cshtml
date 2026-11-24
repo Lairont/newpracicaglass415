@@ -1,0 +1,34 @@
+@model ProductFormViewModel
+@{ var isEdit = Model.Id.HasValue; ViewData["Title"] = isEdit ? "Изменение товара" : "Новый товар"; }
+
+<div class="page-heading"><div><div class="eyebrow">МАГАЗИН КЛУБА</div><h1>@(isEdit ? "Изменить товар" : "Новый товар")</h1><p>Спортивное питание, цена и остаток в магазине.</p></div><a class="btn btn-outline-secondary" asp-action="Index">← К магазину</a></div>
+<section class="panel form-panel">
+    <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input asp-for="Id" type="hidden" />
+        <div class="form-grid">
+            <div class="mb-3"><label asp-for="Name" class="form-label">Наименование</label><input asp-for="Name" class="form-control" placeholder="Например, сывороточный протеин" /><span asp-validation-for="Name" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Sku" class="form-label">Артикул</label><input asp-for="Sku" class="form-control" placeholder="FIT-YG-001" /><span asp-validation-for="Sku" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Category" class="form-label">Категория</label><select asp-for="Category" class="form-select"><option>Протеин</option><option>Креатин</option><option>Аминокислоты</option><option>Витамины</option><option>Батончики</option><option>Аксессуары</option><option>Другое</option></select></div>
+            <div class="mb-3"><label asp-for="Unit" class="form-label">Единица учёта</label><select asp-for="Unit" class="form-select"><option>шт</option><option>упак</option><option>короб</option><option>палета</option></select></div>
+            @if (!isEdit)
+            {
+                <div class="mb-3"><label asp-for="Quantity" class="form-label">Начальный остаток</label><input asp-for="Quantity" class="form-control" type="number" min="0" /><span asp-validation-for="Quantity" class="text-danger small"></span><div class="form-text">Начальное количество будет записано как поступление.</div></div>
+            }
+            else
+            {
+                <div class="mb-3"><label class="form-label">Текущий остаток</label><div class="form-control readonly-field">@Model.Quantity @Model.Unit</div><div class="form-text">Для изменения количества используйте раздел «Остатки магазина».</div></div>
+            }
+            <div class="mb-3"><label asp-for="MinimumStock" class="form-label">Минимальный остаток</label><input asp-for="MinimumStock" class="form-control" type="number" min="0" /><span asp-validation-for="MinimumStock" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="UnitPrice" class="form-label">Цена за единицу, MDL</label><input asp-for="UnitPrice" class="form-control" type="number" min="0" step="0.01" /><span asp-validation-for="UnitPrice" class="text-danger small"></span></div>
+            <div class="mb-3"><label asp-for="Zone" class="form-label">Полка магазина</label><select asp-for="Zone" class="form-select"><option>A-01</option><option>A-02</option><option>B-01</option><option>B-02</option><option>C-01</option><option>C-02</option></select></div>
+            <div class="mb-3"><label asp-for="Condition" class="form-label">Состояние товара</label><select asp-for="Condition" asp-items="Html.GetEnumSelectList<InventoryCondition>()" class="form-select"></select></div>
+            <div class="mb-3"><label asp-for="PurchaseDate" class="form-label">Дата поступления</label><input asp-for="PurchaseDate" class="form-control" type="date" /></div>
+            <div class="mb-3"><label asp-for="WarrantyUntil" class="form-label">Гарантия до</label><input asp-for="WarrantyUntil" class="form-control" type="date" /></div>
+            <div class="mb-3 form-span-two"><label asp-for="Notes" class="form-label">Описание / примечание</label><textarea asp-for="Notes" class="form-control" rows="3" maxlength="400" placeholder="Дополнительная информация об инвентаре"></textarea></div>
+        </div>
+        <div class="form-actions"><a class="btn btn-outline-secondary" asp-action="Index">Отмена</a><button type="submit" class="btn btn-primary">@(isEdit ? "Сохранить изменения" : "Создать карточку")</button></div>
+    </form>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
